@@ -20,7 +20,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
  
-  df_reactive <- reactive({
+  map_df_reactive <- reactive({
     
     df <- map |> 
       filter(year == input$year) |> 
@@ -32,15 +32,28 @@ server <- function(input, output, session) {
     
   })
   
+  graph_df_reactive <- reactive({
+    
+    df <- map |> 
+      filter(year == input$year) |> 
+      group_by(country) |> 
+      count() |> 
+      arrange(desc(n)) |> 
+      top_n(10, n)
+    
+    return(df)
+    
+  })
+  
   output$mapPlot <- renderLeaflet({
     
-    generate_map(df_reactive())
+    generate_map(map_df_reactive())
     
   })
   
   output$magnitudePlot <- renderPlot({
     
-    generate_graph(df_reactive())
+    generate_graph(graph_df_reactive(), input$year)
     
   })
    
