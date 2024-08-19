@@ -11,33 +11,36 @@ ui <- fluidPage(
                                choices = c(min_year:max_year),
                                selected = min_year)),
       mainPanel(width = 10,
-          plotOutput('mapPlot'),
+          leafletOutput('mapPlot'),
           plotOutput('magnitudePlot')
       )
   )
 )
 
+
 server <- function(input, output, session) {
  
   df_reactive <- reactive({
+    
     df <- map |> 
-      filter(year(time) == input$year) |> 
+      filter(year == input$year) |> 
       distinct(id, .keep_all = TRUE) |> 
       arrange(desc(mag)) |> 
       top_n(10, mag)
     
     return(df)
+    
   })
   
-  output$mapPlot <- renderPlot({
+  output$mapPlot <- renderLeaflet({
     
-    
+    generate_map(df_reactive())
     
   })
   
   output$magnitudePlot <- renderPlot({
     
-    
+    generate_graph(df_reactive())
     
   })
    
