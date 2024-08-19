@@ -10,25 +10,17 @@ eq_year_data <- eq_data |>
     mutate(year = year(time),
            country = case_when(
                str_detect(place, ",") ~ str_extract(place, "[^,]+$"),
-               # str_detect(place, "Fiji Islands") ~ "Fiji",
                str_detect(place, "Fiji") ~ "Fiji",
-               str_detect(place, "Japan") ~ "Japan",
-               str_detect(place, "Kuril") ~ "Russia",
+               str_detect(place, "Kuril Islands") ~ "Kuril Islands",
                str_detect(place, "Taiwan") ~ "Taiwan",
-               str_detect(place, "South Sandwich Islands") ~ "United Kingdom",
-               str_detect(place, "Banda Sea") ~ "Indonesia",
-               str_detect(place, "Vanuatu") ~ "Vanuatu",
-               str_detect(place, "Kermadec Islands") ~ "New Zealand",
-               str_detect(place, "Tonga") ~ "Tonga",
-               TRUE ~ "Unknown"),
+               str_detect(place, "South Sandwich Islands") ~ "Sandwich Islands",
+               str_detect(place, "Kermadec Islands") ~ "Kermadec Islands",
+               TRUE ~ place),
            
            country = case_when(
                grepl("Japan", place) ~ "Japan",
                grepl("Mariana Islands", place) ~ "Mariana Islands",
-               grepl('Loyalty Islands', place) ~ "New Calidonia",
-               # grepl('Java Sea', place) ~ "Indonesia",
-               # grepl('Flores Sea', place) ~ "Indonesia",
-               grepl('Colombia', place) ~ "Indonesia",
+               grepl('Loyalty Islands', place) ~ "Loyalty Islands",
                grepl('New Zealand', place) ~ "New Zealand",
                TRUE ~ country
             ),
@@ -36,6 +28,8 @@ eq_year_data <- eq_data |>
 
 min_year <- min(eq_year_data$year)
 max_year <- max(eq_year_data$year)
+
+
 
 
 # convert to sf object

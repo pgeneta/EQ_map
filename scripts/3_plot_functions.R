@@ -3,14 +3,18 @@ generate_map <- function(df){
     
     leaflet() |> 
         addTiles() |> 
-        addCircleMarkers(
-            data = df,
-            label = vars(place),
-            radius = 5,
-            color = "red"
-        )
+        # addCircleMarkers(
+        #     data = df,
+        #     label = 
+        #     radius = 5,
+        #     color = "red")
+        addMarkers(data = df,
+                   popup = ~paste0("Area: ", country, "</br>",
+                                   "Magnitude: ", mag))
+        
 }
 
+generate_map(map)
 
 a <- map |>
     filter(year == 2023) |>
@@ -55,8 +59,7 @@ generate_graph <- function(df, input_year){
         coord_flip()+
         scale_fill_manual(values = c(met.brewer(name = 'Pissaro', n = 12)))+
         labs(
-            title = paste0("Top 10 Countries with the highest number of 
-                           Earthquakes in ", input_year),
+            title = paste0("Top 10 Countries with the highest number of Earthquakes in ", input_year),
             x = '',
             y = ''
         )+
