@@ -8,7 +8,7 @@ eq_data$time <- ymd_hms(eq_data$time)
 
 eq_year_data <- eq_data |> 
     mutate(year = year(time),
-           Country = case_when(
+           country = case_when(
                str_detect(place, ",") ~ str_extract(place, "[^,]+$"),
                # str_detect(place, "Fiji Islands") ~ "Fiji",
                str_detect(place, "Fiji") ~ "Fiji",
@@ -19,10 +19,20 @@ eq_year_data <- eq_data |>
                str_detect(place, "Banda Sea") ~ "Indonesia",
                str_detect(place, "Vanuatu") ~ "Vanuatu",
                str_detect(place, "Kermadec Islands") ~ "New Zealand",
-               str_detect(place, "Mariana Islands") ~ "Mariana Islands",
                str_detect(place, "Tonga") ~ "Tonga",
-               TRUE ~ "Unknown" 
-           ))
+               TRUE ~ "Unknown"),
+           
+           country = case_when(
+               grepl("Japan", place) ~ "Japan",
+               grepl("Mariana Islands", place) ~ "Mariana Islands",
+               grepl('Loyalty Islands', place) ~ "New Calidonia",
+               # grepl('Java Sea', place) ~ "Indonesia",
+               # grepl('Flores Sea', place) ~ "Indonesia",
+               grepl('Colombia', place) ~ "Indonesia",
+               grepl('New Zealand', place) ~ "New Zealand",
+               TRUE ~ country
+            ),
+           country = str_trim(country))
 
 min_year <- min(eq_year_data$year)
 max_year <- max(eq_year_data$year)
@@ -30,6 +40,9 @@ max_year <- max(eq_year_data$year)
 
 # convert to sf object
 map <- st_as_sf(eq_year_data, coords = c('longitude', 'latitude'), crs = 4326)
+
+
+
 
 # df <- eq_data |> 
 #     filter(year(time) == '2015') |> 

@@ -45,3 +45,45 @@ leaflet() |>
         color = 'red'
     )
 
+
+df <- map |> 
+    filter(year == 2016) |> 
+    group_by(Country) |> 
+    count() |> ungroup() |> 
+    arrange(desc(n)) |> 
+    top_n(10, n)
+
+
+generate_graph <- function(df, input_year){
+    df |> ggplot(aes(x = reorder(country, n),
+                     y = n,
+                     fill = country))+
+        geom_bar(stat = 'identity')+
+        coord_flip()+
+        scale_fill_manual(values = c(met.brewer(name = 'Pissaro', n = 12)))+
+        labs(
+            title = paste0("Top 10 Countries with the highest number of Earthquakes - ", 
+                           input_year),
+            x = '',
+            y = ''
+        )+
+        theme_minimal(base_size = 15)+
+        theme(
+            panel.grid.minor = element_blank(),
+            legend.position = 'none'
+        )+
+        scale_y_continuous(breaks = seq(0, 40, by = 5), 
+                             limits = c(0,40))
+    
+}
+
+library(tidyverse)
+
+df <- map |> 
+    filter(year == "2016") |>
+    group_by(country) |> 
+    count() |> 
+    arrange(desc(n)) |> 
+    top_n(10, n)
+
+generate_graph(df, "2016")
