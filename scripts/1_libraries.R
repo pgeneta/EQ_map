@@ -25,3 +25,7 @@ library(shiny)
 if (!require(janitor))
     install.packages("janitor", dependencies = T)
 library(janitor)
+
+if (!require(MetBrewer))
+    install.packages("MetBrewer", dependencies = T)
+library(MetBrewer)
