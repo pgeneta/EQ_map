@@ -11,8 +11,9 @@ ui <- fluidPage(
                                choices = c(min_year:max_year),
                                selected = min_year)),
       mainPanel(width = 10,
-          leafletOutput('mapPlot'),
-          plotOutput('magnitudePlot')
+                h3('Top 10 Earthquakes by Year'),
+                leafletOutput('mapPlot'),
+                plotOutput('eq_count_Plot')
       )
   )
 )
@@ -51,7 +52,7 @@ server <- function(input, output, session) {
     
   })
   
-  output$magnitudePlot <- renderPlot({
+  output$eq_count_Plot <- renderPlot({
     
     generate_graph(graph_df_reactive(), input$year)
     
