@@ -49,7 +49,8 @@ generate_graph <- function(df, input_year){
     
     df |> 
         ggplot(aes(x = reorder(country, n),
-                     y = n))+
+                     y = n,
+                   fill = country))+
         geom_bar(stat = 'identity')+
         coord_flip()+
         scale_fill_manual(values = c(met.brewer(name = 'Pissaro', n = 12)))+
