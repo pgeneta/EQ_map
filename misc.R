@@ -77,13 +77,11 @@ generate_graph <- function(df, input_year){
     
 }
 
-library(tidyverse)
+
 
 df <- map |> 
-    filter(year == "2016") |>
+    filter(year == 2018) |> 
+    distinct(id, .keep_all = TRUE) |> 
     group_by(country) |> 
     count() |> 
-    arrange(desc(n)) |> 
-    top_n(10, n)
-
-generate_graph(df, "2016")
+    arrange(desc(n)) 

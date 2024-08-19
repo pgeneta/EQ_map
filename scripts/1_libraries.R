@@ -29,3 +29,7 @@ library(janitor)
 if (!require(MetBrewer))
     install.packages("MetBrewer", dependencies = T)
 library(MetBrewer)
+
+if (!require(ggtext))
+    install.packages("ggtext", dependencies = T)
+library(ggtext)

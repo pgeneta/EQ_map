@@ -1,6 +1,7 @@
 # Generate Map function
 generate_map <- function(df){
     
+    
     leaflet() |> 
         addTiles() |> 
         # addCircleMarkers(
@@ -53,11 +54,13 @@ generate_graph <- function(df, input_year){
     
     df |> 
         ggplot(aes(x = reorder(country, n),
-                     y = n,
-                   fill = country))+
-        geom_bar(stat = 'identity')+
+                   y = n))+
+        geom_bar(stat = 'identity', aes(fill = country), linewidth = 1, color = "white")+
         coord_flip()+
-        scale_fill_manual(values = c(met.brewer(name = 'Pissaro', n = 12)))+
+        scale_fill_manual(values = c(met.brewer(name = 'Pissaro', n = 32)))+
+        scale_y_continuous(expand = c(0,0.3),
+                           breaks = seq(0, max(df$n+10),by = 10),
+                           limits = c(0, max(df$n)+5))+
         labs(
             title = paste0("Top 10 Countries with the highest number of Earthquakes in ", input_year),
             x = '',
@@ -66,11 +69,19 @@ generate_graph <- function(df, input_year){
         theme_minimal(base_size = 15)+
         theme(
             panel.grid.minor = element_blank(),
-            legend.position = 'none'
-        )
-        #scale_y_continuous(breaks = seq(by = 5))
+            legend.position = 'none',
+            plot.title = element_markdown(face = "bold"),
+            plot.title.position = 'plot'
+        )+
+        geom_label(aes(label = n), color = 'black')
     
 }
 
-#generate_graph(df, 2019)
-
+x <- map |>
+    filter(year == 2015) |>
+    group_by(country) |>
+    count() |> 
+    arrange(desc(n)) |>
+    top_n(10, n)
+    
+generate_graph(x, '2015')

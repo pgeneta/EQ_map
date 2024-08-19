@@ -10,13 +10,13 @@ eq_year_data <- eq_data |>
     mutate(year = year(time),
            country = case_when(
                str_detect(place, ",") ~ str_extract(place, "[^,]+$"),
-               str_detect(place, "Fiji") ~ "Fiji",
+               str_detect(place, "Fiji region") ~ "Fiji",
                str_detect(place, "Kuril Islands") ~ "Kuril Islands",
                str_detect(place, "Taiwan") ~ "Taiwan",
                str_detect(place, "South Sandwich Islands") ~ "Sandwich Islands",
                str_detect(place, "Kermadec Islands") ~ "Kermadec Islands",
-               TRUE ~ place),
-           
+                TRUE ~ place),
+           #
            country = case_when(
                grepl("Japan", place) ~ "Japan",
                grepl("Mariana Islands", place) ~ "Mariana Islands",
