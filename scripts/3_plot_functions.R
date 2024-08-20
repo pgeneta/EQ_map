@@ -6,11 +6,11 @@ generate_map <- function(df){
         addTiles() |> 
         setView(lng = 0,
                 lat = 0,
-                zoom = 2) |>
-        setMaxBounds(lng1 = 1 + 0.05,
-                     lat1 = 1 + 0.05,
-                     lng2 = 1 - 0.05,
-                     lat2 = 1 - 0.05) |> 
+                zoom = 1.2) |>
+        # setMaxBounds(lng1 = 1.2 + 0.05,
+        #              lat1 = 1.2 + 0.05,
+        #              lng2 = 1.2 - 0.05,
+        #              lat2 = 1.2 - 0.05) |> 
         addCircleMarkers(
             data = df,
             popup = ~paste0("Area: ", country, "</br>",
