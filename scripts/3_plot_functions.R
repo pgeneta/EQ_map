@@ -77,7 +77,7 @@ generate_graph <- function(df, input_year){
             x = '',
             y = ''
         )+
-        theme_minimal(base_size = 15)+
+        theme_minimal(base_size = 15, base_family = 'Times New Roman')+
         theme(
             panel.grid.minor = element_blank(),
             legend.position = 'none',

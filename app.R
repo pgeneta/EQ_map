@@ -2,7 +2,13 @@ source("scripts/1_libraries.R")
 source("scripts/2_data.R")
 source("scripts/3_plot_functions.R")
 
+
+
 ui <- fluidPage(
+  
+  tags$head(tags$style(HTML('* {font-family: "Times New Roman"}'))),
+  
+  
   titlePanel('Earthquake Map Shiny App'),
   sidebarLayout(
       sidebarPanel(width = 2,
