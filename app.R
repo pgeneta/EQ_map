@@ -11,7 +11,7 @@ ui <- fluidPage(
                                choices = c(min_year:max_year),
                                selected = min_year)),
       mainPanel(width = 10,
-                h3('Top 10 Earthquakes by Year'),
+                h3(textOutput('dynamic_header')),
                 leafletOutput('mapPlot'),
                 plotOutput('eq_count_Plot')
       )
@@ -21,6 +21,10 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
  
+  output$dynamic_header <- renderText({
+    paste0("Top 10 strongest earthquakes by magnitude in ", input$year)
+  })
+  
   map_df_reactive <- reactive({
     
     df <- map |> 
