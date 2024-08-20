@@ -26,13 +26,13 @@ generate_map <- function(df){
         
 }
 
-generate_map(map)
-
-a <- map |>
-    filter(year == 2023) |>
-    distinct(id, .keep_all = TRUE) |>
-    arrange(desc(mag)) |>
-    top_n(10, mag)
+# generate_map(map)
+# 
+# a <- map |>
+#     filter(year == 2023) |>
+#     distinct(id, .keep_all = TRUE) |>
+#     arrange(desc(mag)) |>
+#     top_n(10, mag)
 # 
 # generate_map(a)
 
@@ -82,7 +82,8 @@ generate_graph <- function(df, input_year){
             panel.grid.minor = element_blank(),
             legend.position = 'none',
             plot.title = element_markdown(face = "bold"),
-            plot.title.position = 'plot'
+            plot.title.position = 'plot',
+            axis.text = element_markdown(size = 17)
         )+
         geom_label(aes(label = n), color = 'black')
     
