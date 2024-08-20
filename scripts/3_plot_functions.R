@@ -4,15 +4,25 @@ generate_map <- function(df){
     
     leaflet() |> 
         addTiles() |> 
-        # addCircleMarkers(
-        #     data = df,
-        #     label = 
-        #     radius = 5,
-        #     color = "red")
-        addMarkers(data = df,
-                   popup = ~paste0("Area: ", country, "</br>",
-                                   "Magnitude: ", mag, "</br>",
-                                   "Depth: ", depth))
+        setView(lng = 0,
+                lat = 0,
+                zoom = 2) |>
+        setMaxBounds(lng1 = 1 + 0.05,
+                     lat1 = 1 + 0.05,
+                     lng2 = 1 - 0.05,
+                     lat2 = 1 - 0.05) |> 
+        addCircleMarkers(
+            data = df,
+            popup = ~paste0("Area: ", country, "</br>",
+                            "Magnitude: ", mag, "</br>",
+                            "Depth: ", depth),
+            radius = ~mag * 2,
+            color = "red",
+            fillOpacity = 0.3)
+        # addMarkers(data = df,
+        #            popup = ~paste0("Area: ", country, "</br>",
+        #                            "Magnitude: ", mag, "</br>",
+        #                            "Depth: ", depth))
         
 }
 
