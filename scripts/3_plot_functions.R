@@ -31,37 +31,42 @@ generate_map <- function(df) {
 
 # Generate bar graph function-----------
 generate_graph <- function(df, input_year) {
-    df |>
-        ggplot(aes(
-            x = reorder(country, n),
-            y = n
-        )) +
-        geom_bar(stat = "identity", aes(fill = country), linewidth = 1, color = "white") +
-        coord_flip() +
-        scale_fill_manual(values = c(met.brewer(name = "Pissaro", n = 32))) +
-        scale_y_continuous(
-            expand = c(0, 0.3),
-            breaks = seq(0, max(df$n + 10), by = 10),
-            limits = c(0, max(df$n) + 5)
-        ) +
-        labs(
-            title = paste0("Top 10 Areas with the highest number of Earthquakes in ", input_year),
-            x = "",
-            y = "Number of earthquakes"
-        ) +
-        theme_minimal(base_size = 15, base_family = "Times New Roman") +
-        theme(
-            panel.grid.minor = element_blank(),
-            legend.position = "none",
-            plot.title = element_markdown(face = "bold"),
-            plot.title.position = "plot",
-            axis.text = element_markdown(size = 17),
-            axis.title = element_text(
-                size = 20,
-                face = "bold"
-            )
-        ) +
-        geom_label(aes(label = n), color = "black", size = 5)
+  df |>
+    ggplot(aes(
+      x = reorder(country, n),
+      y = n
+    )) +
+    geom_bar(
+      stat = "identity",
+      aes(fill = country),
+      linewidth = 1,
+      color = "white"
+    ) +
+    coord_flip() +
+    scale_fill_manual(values = c(met.brewer(name = "Pissaro", n = 32))) +
+    scale_y_continuous(
+      expand = c(0, 0.3),
+      breaks = seq(0, max(df$n + 10), by = 10),
+      limits = c(0, max(df$n) + 5)
+    ) +
+    labs(
+      title = paste0("Areas with the highest number of Earthquakes in ", input_year),
+      x = "",
+      y = "Number of Earthquakes"
+    ) +
+    theme_minimal(base_size = 15, base_family = "Times New Roman") +
+    theme(
+      panel.grid.minor = element_blank(),
+      legend.position = "none",
+      plot.title = element_markdown(face = "bold"),
+      plot.title.position = "plot",
+      axis.text = element_markdown(size = 17),
+      axis.title = element_text(
+        size = 20,
+        face = "bold"
+      )
+    ) +
+    geom_label(aes(label = n), color = "black", size = 5)
 }
 
 

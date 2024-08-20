@@ -18,6 +18,7 @@ eq_year_data <- eq_data |>
       str_detect(place, "Kermadec Islands") ~ "Kermadec Islands",
       TRUE ~ place
     ),
+    # clean up irrelevant texts eg "Japan region" to "Japan"
     country = case_when(
       grepl("Japan", place) ~ "Japan",
       grepl("Mariana Islands", place) ~ "Mariana Islands",
@@ -36,8 +37,6 @@ eq_year_data <- eq_data |>
 
 min_year <- min(eq_year_data$year)
 max_year <- max(eq_year_data$year)
-
-
 
 
 # convert to sf object
