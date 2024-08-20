@@ -22,7 +22,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
  
   output$dynamic_header <- renderText({
-    paste0("Top 10 strongest earthquakes by magnitude in ", input$year)
+    paste0("Top 10 strongest earthquakes in ", input$year)
   })
   
   map_df_reactive <- reactive({
@@ -30,7 +30,6 @@ server <- function(input, output, session) {
     df <- map |> 
       filter(year == input$year) |> 
       distinct(id, .keep_all = TRUE) |> 
-      arrange(desc(mag)) |> 
       top_n(10, mag)
     
     return(df)
