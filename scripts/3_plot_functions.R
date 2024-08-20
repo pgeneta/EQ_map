@@ -58,11 +58,12 @@ generate_graph <- function(df, input_year) {
     theme(
       panel.grid.minor = element_blank(),
       legend.position = "none",
-      plot.title = element_markdown(face = "bold"),
+      plot.title = element_markdown(size = 23,
+                                    face = "bold"),
       plot.title.position = "plot",
       axis.text = element_markdown(size = 17),
       axis.title = element_text(
-        size = 20,
+        size = 15,
         face = "bold"
       )
     ) +

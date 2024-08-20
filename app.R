@@ -23,7 +23,7 @@ ui <- fluidPage(
     
     mainPanel(
       width = 10,
-      h3(textOutput("dynamic_header")),
+      h3(htmlOutput("dynamic_header")),
       leafletOutput("map_plot"),
       plotOutput("eq_count_plot")
     )
@@ -34,7 +34,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   
   output$dynamic_header <- renderText({
-    paste0("Top 10 strongest earthquakes in ", input$year)
+    paste0("<b>Top 10 strongest earthquakes in ", input$year, "</b>")
   })
 
   map_df_reactive <- reactive({
