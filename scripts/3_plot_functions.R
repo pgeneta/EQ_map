@@ -11,7 +11,8 @@ generate_map <- function(df){
         #     color = "red")
         addMarkers(data = df,
                    popup = ~paste0("Area: ", country, "</br>",
-                                   "Magnitude: ", mag))
+                                   "Magnitude: ", mag, "</br>",
+                                   "Depth: ", depth))
         
 }
 
@@ -62,7 +63,7 @@ generate_graph <- function(df, input_year){
                            breaks = seq(0, max(df$n+10),by = 10),
                            limits = c(0, max(df$n)+5))+
         labs(
-            title = paste0("Top 10 Countries with the highest number of Earthquakes in ", input_year),
+            title = paste0("Top 10 Areas with the highest number of Earthquakes in ", input_year),
             x = '',
             y = ''
         )+
@@ -77,11 +78,11 @@ generate_graph <- function(df, input_year){
     
 }
 
-x <- map |>
-    filter(year == 2015) |>
-    group_by(country) |>
-    count() |> 
-    arrange(desc(n)) |>
-    top_n(10, n)
-    
-generate_graph(x, '2015')
+# x <- map |>
+#     filter(year == 2015) |>
+#     group_by(country) |>
+#     count() |> 
+#     arrange(desc(n)) |>
+#     top_n(10, n)
+#     
+# generate_graph(x, '2015')
