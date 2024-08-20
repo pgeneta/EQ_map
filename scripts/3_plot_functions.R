@@ -75,7 +75,7 @@ generate_graph <- function(df, input_year){
         labs(
             title = paste0("Top 10 Areas with the highest number of Earthquakes in ", input_year),
             x = '',
-            y = ''
+            y = 'Number of earthquakes'
         )+
         theme_minimal(base_size = 15, base_family = 'Times New Roman')+
         theme(
@@ -83,9 +83,11 @@ generate_graph <- function(df, input_year){
             legend.position = 'none',
             plot.title = element_markdown(face = "bold"),
             plot.title.position = 'plot',
-            axis.text = element_markdown(size = 17)
+            axis.text = element_markdown(size = 17),
+            axis.title = element_text(size = 20,
+                                      face = 'bold')
         )+
-        geom_label(aes(label = n), color = 'black')
+        geom_label(aes(label = n), color = 'black', size = 5)
     
 }
 
