@@ -1,6 +1,6 @@
-source("~/Documents/R/EQ_map/scripts/1_libraries.R")
-source("~/Documents/R/EQ_map/scripts/2_data.R")
-source("~/Documents/R/EQ_map/scripts/3_plot_functions.R")
+source("scripts/1_libraries.R")
+source("scripts/2_data.R")
+source("scripts/3_plot_functions.R")
 
 ui <- fluidPage(
   titlePanel('Earthquake Map Shiny App'),
