@@ -16,7 +16,7 @@ generate_map <- function(df){
             popup = ~paste0("Area: ", country, "</br>",
                             "Magnitude: ", mag, "</br>",
                             "Depth: ", depth),
-            radius = ~mag * 2,
+            radius = ~mag * 2.5,
             color = "red",
             fillOpacity = 0.3)
         # addMarkers(data = df,
