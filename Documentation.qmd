@@ -1,0 +1,266 @@
+---
+title: "Earthquake Map Shiny App Documentation"
+format: html
+editor: visual
+---
+
+An R Shiny App visualising earthquake data from 2014 to 2024.
+
+## What you'll see
+
+-   A drop-down menu to select the year of interest
+
+-   A map visual of the top 10 largest earthquakes for the selected year.
+
+    -   You can click within the radius to get information on the area, magnitude and depth.
+
+    -   The larger the radius, the stronger the magnitude.
+
+-   A bar graph of the top 10 areas with the highest number of earthquakes for the selected year.
+
+## Files in the Shiny App folder
+
+### 1_libraries.R
+
+Location: scripts/1_libraries.R
+
+This R script contains all the relevant libraries used in the Shiny App. For future development, the developer can add in any libraries they feel are necessary.
+
+### 2_data.R
+
+Location: scripts/2_data.R
+
+This R script reads in the dataset for this app, and cleans the dataset before it can be used to create a map and charts. The explanation of the codes are described below.
+
+```{r, eval=FALSE}
+eq_data$time <- ymd_hms(eq_data$time)
+```
+
+Utilises the lubridate package to parse time data. Useful to separate out the year variable to be used as drop-down options in the Shiny App.
+
+```{r, eval=FALSE}
+eq_year_data <- eq_data |>
+  mutate(
+    year = year(time),
+    country = case_when(
+      str_detect(place, ",") ~ str_extract(place, "[^,]+$"),
+      str_detect(place, "Fiji region") ~ "Fiji",
+      str_detect(place, "Kuril Islands") ~ "Kuril Islands",
+      str_detect(place, "Taiwan") ~ "Taiwan",
+      str_detect(place, "South Sandwich Islands") ~ "Sandwich Islands",
+      str_detect(place, "Kermadec Islands") ~ "Kermadec Islands",
+      TRUE ~ place
+    ),
+    # clean up irrelevant texts eg "Japan region" to "Japan"
+    country = case_when(
+      grepl("Japan", place) ~ "Japan",
+      grepl("Mariana Islands", place) ~ "Mariana Islands",
+      grepl("Loyalty Islands", place) ~ "Loyalty Islands",
+      grepl("New Zealand", place) ~ "New Zealand",
+      TRUE ~ country
+    ),
+    country = str_trim(country),
+    country = recode(
+      country,
+      "south of the Fiji Islands" = "South of the Fiji Islands"
+    )
+  )
+```
+
+This block of code breaks down the place column into a respective area and cleans up any messy titles. For example, "Japan region" will be changed to Japan. \
+Also note that the variable name is country but may not necessarily reflect the country. It include areas such as "Banda Sea", "Java Sea" etc.
+
+```{r, eval=FALSE}
+min_year <- min(eq_year_data$year)
+max_year <- max(eq_year_data$year)
+```
+
+Used these objects to make drop downs in app.R file dynamic, in case if a new dataset is used and adds or subtracts years.
+
+```{r, eval=FALSE}
+map <- st_as_sf(eq_year_data, coords = c("longitude", "latitude"), crs = 4326)
+```
+
+Converts to 'sf' object using longitude and latitude variables in the dataset. This is the final dataset that will be used to called and transformed to form outputs.
+
+### 3_plot_function.R
+
+Location: script/3_plot_functions.R
+
+There are two functions that is used in the Shiny App.
+
+```{r, eval=FALSE}
+generate_map <- function(df) {
+  leaflet() |>
+    addTiles() |>
+    setView(
+      lng = 0,
+      lat = 0,
+      zoom = 1.2
+    ) |>
+    addCircleMarkers(
+      data = df,
+      popup = ~ paste0(
+        "Area: ", country, "</br>",
+        "Magnitude: ", mag, "</br>",
+        "Depth: ", depth
+      ),
+      radius = ~ mag * 1.5,
+      color = "red",
+      fillOpacity = 0.3
+    )
+}
+```
+
+This function only requires one variable (df) to be called which is the dataset. In the app.R file, a reactive dataset is called so that it can be filtered by the selected year.
+
+-   Utilises leaflet to generate the map
+
+-   setView() - sets the view of the map when arriving on the landing page
+
+    -   Use latitude and longitude values to set the view. Zoom is the level of zoom the map will start at.
+
+-   addCircleMarkers() - adds a circle, highlighting where an earthquake occurred.
+
+    -   Includes a popup where if a user clicks on it, it displays information about the area, magnitude and depth.
+
+    -   The radius of the circle is also dependent on the size of the magnitude.
+
+```{r, eval=FALSE}
+generate_graph <- function(df, input_year) {
+  df |>
+    ggplot(aes(
+      x = reorder(country, n),
+      y = n
+    )) +
+    geom_bar(
+      stat = "identity",
+      aes(fill = country),
+      linewidth = 1,
+      color = "white"
+    ) +
+    coord_flip() +
+    scale_fill_manual(values = c(met.brewer(name = "Pissaro", n = 32))) +
+    scale_y_continuous(
+      expand = c(0, 0.3),
+      breaks = seq(0, max(df$n + 10), by = 10),
+      limits = c(0, max(df$n) + 5)
+    ) +
+    labs(
+      title = paste0("Areas with the highest number of Earthquakes in ", input_year),
+      x = "",
+      y = "Number of Earthquakes"
+    ) +
+    theme_minimal(base_size = 15, base_family = "Times New Roman") +
+    theme(
+      panel.grid.minor = element_blank(),
+      legend.position = "none",
+      plot.title = element_markdown(size = 23,
+                                    face = "bold"),
+      plot.title.position = "plot",
+      axis.text = element_markdown(size = 17),
+      axis.title = element_text(
+        size = 15,
+        face = "bold"
+      )
+    ) +
+    geom_label(aes(label = n), color = "black", size = 5)
+}
+```
+
+This generates the bar graph for a count of the number of earthquakes for a given year. This requires two inputs, the data and an input year. The input year does NOT filter by year, it's used to have a dynamic titles. The reactive dataset in app.R does all data manipulation.
+
+### app.R
+
+This is the main file that generates the application. This can be broken down into two sections.
+
+#### UI
+
+```{r, eval=FALSE}
+source("scripts/1_libraries.R")
+source("scripts/2_data.R")
+source("scripts/3_plot_functions.R")
+
+ui <- fluidPage(
+  
+  tags$head(tags$style(HTML('* {font-family: "Times New Roman"}'))),
+  
+  titlePanel("Earthquake Map Shiny App"),
+  
+  sidebarLayout(
+    
+    sidebarPanel(
+      width = 2,
+      selectInput("year",
+        "Select Year:",
+        choices = c(min_year:max_year),
+        selected = min_year
+      )
+    ),
+    
+    mainPanel(
+      width = 10,
+      h3(htmlOutput("dynamic_header")),
+      leafletOutput("map_plot"),
+      plotOutput("eq_count_plot")
+    )
+  )
+)
+```
+
+-   Source the first 3 R scripts so that functions and objects can be read into this R script. Prefer to keep them out of the app.R script to keep it tidy and makes it easier to debug if any issues arise.
+
+-   Utilises a sidebarLayout which holds the drop-down menu on the left hand side and displays the outputs on the right hand side.
+
+    -   As mentioned in the 2_data.R section, min_year and max_year objects were used to make the choices dynamic in case of any future development.
+
+-   HTML tags to change font to Times New Roman.
+
+#### Server
+
+```{r, eval=FALSE}
+server <- function(input, output, session) {
+  
+  output$dynamic_header <- renderText({
+    paste0("<b>Top 10 strongest earthquakes in ", input$year, "</b>")
+  })
+
+  map_df_reactive <- reactive({
+    df <- map |>
+      filter(year == input$year) |>
+      distinct(id, .keep_all = TRUE) |>
+      top_n(10, mag)
+
+    return(df)
+  })
+
+  graph_df_reactive <- reactive({
+    df <- map |>
+      filter(year == input$year) |>
+      group_by(country) |>
+      count() |>
+      arrange(desc(n)) |>
+      top_n(10, n)
+
+    return(df)
+  })
+
+  output$map_plot <- renderLeaflet({
+    generate_map(map_df_reactive())
+  })
+
+  output$eq_count_plot <- renderPlot({
+    generate_graph(graph_df_reactive(), input$year)
+  })
+}
+
+shinyApp(ui, server)
+```
+
+-   **map_df_reactive** and **graph_df_reactive** is where the transformation of the dataset is done. It's located in the server section (instead of 2_data.R) to use the input\$year to filter by the year selected in the app dropdown.
+
+-   **map_plot** and **eq_count_plot** generates the map and bar graph, using the functions that were used in 3_plot_functions.R and the reactive dataset functions noted above.
+
+### misc.R
+
+This R script is where I worked on miscellaneous functions and plots. This was primarily used during the planning and prototype stage of development.
