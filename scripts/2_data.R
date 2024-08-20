@@ -1,5 +1,5 @@
 # Read in data
-eq_data <- read.csv("~/Documents/R/EQ_map/eq_mag5plus_2014_2024.csv")
+eq_data <- read.csv("eq_mag5plus_2014_2024.csv")
 
 
 # Clean data
