@@ -1,5 +1,5 @@
 # Read in data
-eq_data <- read.csv("eq_mag5plus_2014_2024.csv")
+eq_data <- read.csv("eq_mag5plus_2014_2024.csv", stringsAsFactors = F)
 
 
 # Clean data
@@ -15,16 +15,22 @@ eq_year_data <- eq_data |>
                str_detect(place, "Taiwan") ~ "Taiwan",
                str_detect(place, "South Sandwich Islands") ~ "Sandwich Islands",
                str_detect(place, "Kermadec Islands") ~ "Kermadec Islands",
-                TRUE ~ place),
-           #
+               TRUE ~ place),
+           
            country = case_when(
                grepl("Japan", place) ~ "Japan",
                grepl("Mariana Islands", place) ~ "Mariana Islands",
                grepl('Loyalty Islands', place) ~ "Loyalty Islands",
                grepl('New Zealand', place) ~ "New Zealand",
                TRUE ~ country
-            ),
-           country = str_trim(country))
+           ),
+           country = str_trim(country),
+           country = recode(
+               country, "south of the Fiji Islands" = 'South of the Fiji Islands'
+           )
+    )
+
+
 
 min_year <- min(eq_year_data$year)
 max_year <- max(eq_year_data$year)
